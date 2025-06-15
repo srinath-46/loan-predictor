@@ -7,6 +7,7 @@ engine = create_engine('sqlite:///database.db')
 
 def init_db():
     with engine.connect() as conn:
+        conn.execute(text("DROP TABLE IF EXISTS loan_predictions"))
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS loan_predictions (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,10 +21,16 @@ def init_db():
                 loan_amount REAL,
                 loan_term_months INTEGER,
                 debt_to_income REAL,
+                credit_utilization REAL,
+                payment_ratio REAL,
+                loan_age_months INTEGER,
+                gender_encoded INTEGER,
+                marital_status_encoded INTEGER,
                 prediction REAL,
                 risk_category TEXT
             );
         """))
+
 
 def predict_risk(input_df):
     pred_prob = model.predict_proba(input_df)[0][1]
